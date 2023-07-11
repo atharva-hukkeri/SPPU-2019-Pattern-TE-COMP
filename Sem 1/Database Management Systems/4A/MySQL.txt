@@ -1,0 +1,74 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| cust1              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| s1                 |
+| sys                |
+| teacher            |
++--------------------+
+7 rows in set (0.00 sec)
+
+mysql> use teacher;
+Database changed
+
+mysql> desc student;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| ID    | int          | NO   |     | NULL    |       |
+| Name  | varchar(255) | YES  |     | NULL    |       |
+| Marks | varchar(255) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> select *from student;
++----+---------+-------+
+| ID | Name    | Marks |
++----+---------+-------+
+|  1 | Kevin   | 88    |
+|  2 | Shanaya | 82    |
+|  3 | Kartik  | 76    |
++----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select *from student;
++----+---------+-------+
+| ID | Name    | Marks |
++----+---------+-------+
+|  2 | Shanaya | 82    |
+|  3 | Kartik  | 76    |
++----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select *from student;
++----+---------+-------+
+| ID | Name    | Marks |
++----+---------+-------+
+|  2 | Shanaya | 90    |
+|  3 | Kartik  | 76    |
++----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select *from student;
++----+---------+-------+------+
+| ID | Name    | Marks | Age  |
++----+---------+-------+------+
+|  2 | Shanaya | 90    | NULL |
+|  3 | Kartik  | 76    | NULL |
++----+---------+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select *from student;
++----+---------+-------+
+| ID | Name    | Marks |
++----+---------+-------+
+|  2 | Shanaya | 90    |
+|  3 | Kartik  | 76    |
++----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql>
