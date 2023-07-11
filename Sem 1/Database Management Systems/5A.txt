@@ -1,0 +1,138 @@
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| cust1              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| s1                 |
+| sys                |
+| teacher            |
++--------------------+
+7 rows in set (0.01 sec)
+
+mysql> use s1;
+Database changed
+mysql> desc borrower;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| rollno        | varchar(10) | YES  |     | NULL    |       |
+| name          | varchar(10) | YES  |     | NULL    |       |
+| date_of_isuue | date        | YES  |     | NULL    |       |
+| nameofbook    | varchar(20) | YES  |     | NULL    |       |
+| status        | varchar(5)  | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> desc fine;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| rollno | varchar(10) | YES  |     | NULL    |       |
+| date1  | date        | YES  |     | NULL    |       |
+| amount | varchar(10) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select *from borrower;
++--------+-----------+---------------+------------+--------+
+| rollno | name      | date_of_isuue | nameofbook | status |
++--------+-----------+---------------+------------+--------+
+| 1      | pratiksha | 2017-10-03    | TOC        | I      |
+| 2      | niraj     | 2017-01-02    | DBMS       | I      |
+| 3      | nirmal    | 2017-01-02    | DBMS       | R      |
+| 4      | rohan     | 2017-09-05    | CN         | I      |
++--------+-----------+---------------+------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select *from fine;
+Empty set (0.00 sec)
+
+mysql> delimiter $
+mysql> create procedure fine_calc(IN rno int(3),nameofbook char(30))
+    -> begin
+    -> declare issue_date date;
+    -> declare no_of_days int;
+    -> declare fine_amt int;
+    -> declare continue handler for not found
+    -> begin
+    -> select 'Not Found';
+    -> end;
+    -> select date_of_isuue into issue_date from borrower where rollno=rno;
+    -> select datediff(curdate(),issue_date) into no_of_days from dual;
+    -> if (no_of_days>15 and no_of_days<30) then
+    -> set fine_amt = no_of_days*5;
+    -> insert into fine values(rno,curdate(),fine_amt);
+    -> elseif(no_of_days>30) then
+    -> set fine_amt=15*5+(no_of_days-30)*50;
+    -> insert into fine values(rno,curdate(),fine_amt);
+    -> end if;
+    -> update borrower set status='R' where rollno=rno;
+    -> end;
+    -> $
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> delimiter ;
+mysql> call fine_calc(3,'DBMS');
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select *from fine;
++--------+------------+--------+
+| rollno | date1      | amount |
++--------+------------+--------+
+| 3      | 2021-09-14 | 84375  |
++--------+------------+--------+
+1 row in set (0.00 sec)
+
+mysql> call fine_calc(2,'DBMS');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select *from fine;
++--------+------------+--------+
+| rollno | date1      | amount |
++--------+------------+--------+
+| 3      | 2021-09-14 | 84375  |
+| 2      | 2021-09-14 | 84375  |
++--------+------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> call fine_calc(1,'TOC');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select *from fine;
++--------+------------+--------+
+| rollno | date1      | amount |
++--------+------------+--------+
+| 3      | 2021-09-14 | 84375  |
+| 2      | 2021-09-14 | 84375  |
+| 1      | 2021-09-14 | 70675  |
++--------+------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select *from borrower;
++--------+-----------+---------------+------------+--------+
+| rollno | name      | date_of_isuue | nameofbook | status |
++--------+-----------+---------------+------------+--------+
+| 1      | pratiksha | 2017-10-03    | TOC        | R      |
+| 2      | niraj     | 2017-01-02    | DBMS       | R      |
+| 3      | nirmal    | 2017-01-02    | DBMS       | R      |
+| 4      | rohan     | 2017-09-05    | CN         | I      |
++--------+-----------+---------------+------------+--------+
+4 rows in set (0.00 sec)
+
+mysql>
