@@ -1,0 +1,192 @@
+Microsoft Windows [Version 10.0.19042.1165]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Acer>cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 17
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| s1                 |
+| sys                |
++--------------------+
+5 rows in set (0.03 sec)
+
+mysql> use s1;
+Database changed
+mysql> show tables;
++--------------+
+| Tables_in_s1 |
++--------------+
+| student      |
+| te           |
++--------------+
+2 rows in set (0.13 sec)
+
+mysql> create table customer(cust_id int(10) NOT NULL primary key,cust_name varchar(30),product varchar(30),quantity int(5),total_price int(10));
+Query OK, 0 rows affected, 3 warnings (0.09 sec)
+
+mysql> insert into customer(cust_id,cust_name,product,quantity,total_price) values(001,'Niraj','pen',30,50),(002,'Param','Book',50,50),(003,'hemanth','pencil',15,30),(004,'pallavi','Textbook',30,600),(005,'pratiksha','bootle',20,100);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from customer;
++---------+-----------+----------+----------+-------------+
+| cust_id | cust_name | product  | quantity | total_price |
++---------+-----------+----------+----------+-------------+
+|       1 | Niraj     | pen      |       30 |          50 |
+|       2 | Param     | Book     |       50 |          50 |
+|       3 | hemanth   | pencil   |       15 |          30 |
+|       4 | pallavi   | Textbook |       30 |         600 |
+|       5 | pratiksha | bootle   |       20 |         100 |
++---------+-----------+----------+----------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> alter table customer modify cust_id int auto_increment;
+Query OK, 5 rows affected (0.08 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE customer
+    -> ADD price_per_qnty INTEGER;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select *from customer;
++---------+-----------+----------+----------+-------------+----------------+
+| cust_id | cust_name | product  | quantity | total_price | price_per_qnty |
++---------+-----------+----------+----------+-------------+----------------+
+|       1 | Niraj     | pen      |       30 |          50 |           NULL |
+|       2 | Param     | Book     |       50 |          50 |           NULL |
+|       3 | hemanth   | pencil   |       15 |          30 |           NULL |
+|       4 | pallavi   | Textbook |       30 |         600 |           NULL |
+|       5 | pratiksha | bootle   |       20 |         100 |           NULL |
++---------+-----------+----------+----------+-------------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> create view cust_view as select cust_id,product,total_price from customer;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from cust_view;
++---------+----------+-------------+
+| cust_id | product  | total_price |
++---------+----------+-------------+
+|       1 | pen      |          50 |
+|       2 | Book     |          50 |
+|       3 | pencil   |          30 |
+|       4 | Textbook |         600 |
+|       5 | bootle   |         100 |
++---------+----------+-------------+
+5 rows in set (0.01 sec)
+
+mysql> update cust_view set product='bottle',total_price=500 where cust_id=5;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from cust_view;
++---------+----------+-------------+
+| cust_id | product  | total_price |
++---------+----------+-------------+
+|       1 | pen      |          50 |
+|       2 | Book     |          50 |
+|       3 | pencil   |          30 |
+|       4 | Textbook |         600 |
+|       5 | bottle   |         500 |
++---------+----------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> select *from customer;
++---------+-----------+----------+----------+-------------+----------------+
+| cust_id | cust_name | product  | quantity | total_price | price_per_qnty |
++---------+-----------+----------+----------+-------------+----------------+
+|       1 | Niraj     | pen      |       30 |          50 |           NULL |
+|       2 | Param     | Book     |       50 |          50 |           NULL |
+|       3 | hemanth   | pencil   |       15 |          30 |           NULL |
+|       4 | pallavi   | Textbook |       30 |         600 |           NULL |
+|       5 | pratiksha | bottle   |       20 |         500 |           NULL |
++---------+-----------+----------+----------+-------------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> drop view cust_view;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Create Index cust_index on customer (cust_name);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc cust_index;
+ERROR 1146 (42S02): Table 's1.cust_index' doesn't exist
+mysql> show index from customer;
++----------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| customer |          0 | PRIMARY    |            1 | cust_id     | A         |           5 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | cust_index |            1 | cust_name   | A         |           5 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
++----------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+2 rows in set (0.02 sec)
+
+mysql> DROP INDEX cust_index on customer;;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+ERROR:
+No query specified
+
+mysql> show index from customer;
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| customer |          0 | PRIMARY  |            1 | cust_id     | A         |           5 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+1 row in set (0.01 sec)
+
+mysql> insert into customer(cust_name,product,quantity,total_price) values('raj','pen',30,50),('ram','Book',150,50);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select *from customer;
++---------+-----------+----------+----------+-------------+----------------+
+| cust_id | cust_name | product  | quantity | total_price | price_per_qnty |
++---------+-----------+----------+----------+-------------+----------------+
+|       1 | Niraj     | pen      |       30 |          50 |           NULL |
+|       2 | Param     | Book     |       50 |          50 |           NULL |
+|       3 | hemanth   | pencil   |       15 |          30 |           NULL |
+|       4 | pallavi   | Textbook |       30 |         600 |           NULL |
+|       5 | pratiksha | bottle   |       20 |         500 |           NULL |
+|       6 | raj       | pen      |       30 |          50 |           NULL |
+|       7 | ram       | Book     |      150 |          50 |           NULL |
++---------+-----------+----------+----------+-------------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> select cust_name as sname from customer;
++-----------+
+| sname     |
++-----------+
+| Niraj     |
+| Param     |
+| hemanth   |
+| pallavi   |
+| pratiksha |
+| raj       |
+| ram       |
++-----------+
+7 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
