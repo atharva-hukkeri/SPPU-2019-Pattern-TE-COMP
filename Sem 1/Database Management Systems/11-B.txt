@@ -1,0 +1,39 @@
+
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+mbd     0.000GB
+mdb     0.000GB
+> use mdb
+switched to db mdb
+> db.createCollection('map')
+{ "ok" : 1 }
+> db.map.insert({'Name':'Rohan','Age':30})
+WriteResult({ "nInserted" : 1 })
+> db.map.insert({'Name':'Kartik','Age':25})
+WriteResult({ "nInserted" : 1 })
+> db.map.insert({'Name':'Rakesh','Age':24})
+WriteResult({ "nInserted" : 1 })
+> db.map.insert({'Name':'Riya','Age':25})
+WriteResult({ "nInserted" : 1 })
+> db.map.insert({'Name':'Sakshi','Age':28})
+WriteResult({ "nInserted" : 1 })
+> db.map.insert({'Name':'Rohan','Age':29})
+WriteResult({ "nInserted" : 1 })
+> db.map.insert({'Name':'Riya','Age':26})
+WriteResult({ "nInserted" : 1 })
+>
+>
+> var mapFunction=function(){emit(this.Name,this.Age)}
+> var reduceFunction=function(keyName,valueAge){return Array.sum(valueAge)}
+> db.map.mapReduce(mapfunction,reduceFunction,{'out':'Result'})
+{ "result" : "Result", "ok" : 1 }
+>
+> db.Result.find()
+{ "_id" : "Rakesh", "value" : 24 }
+{ "_id" : "Rohan", "value" : 59 }
+{ "_id" : "Kartik", "value" : 25 }
+{ "_id" : "Riya", "value" : 51 }
+{ "_id" : "Sakshi", "value" : 28 }
+>
