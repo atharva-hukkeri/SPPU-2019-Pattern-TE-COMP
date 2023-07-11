@@ -1,9 +1,8 @@
- import java.io.*;  
- import java.sql.*;  
+import java.io.*;  
+import java.sql.*;  
   
- import java.util.*; 
+import java.util.*; 
 public class DMA2 {
-
 	public static void main(String[] args) throws Exception   
 	   {   int rno,age;  
 	      String col1,col2,col3,col4,col5,col6;    
