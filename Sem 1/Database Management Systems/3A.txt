@@ -1,0 +1,320 @@
+Microsoft Windows [Version 10.0.19042.1165]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Acer>cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 19
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| s1                 |
+| sys                |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> create database cust1;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use cust1;
+Database changed
+mysql> create table customer(cid int(30) primary key NOT NULL,name varchar(30),age int(10),address varchar(30),sal int(10));
+Query OK, 0 rows affected, 3 warnings (0.04 sec)
+
+mysql> create table orders(oid int(30) primary key,o_date varchar(30),amount int(10));
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> insert into customer(cid,name,age,address,sal) values(101,'param',19,'pune',50000),(102,'pallavi',20,'mumbai',750000),(103,'Niraj',23,'mumbai',20000),(104,'pratiksha',23,'nashik',15000),(105,'Diksha',35,'jamu',25000);
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> drop  table orders;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table orders(oid int(30) primary key,o_date varchar(30),cid int(30),amount decimal(7,2));
+Query OK, 0 rows affected, 2 warnings (0.03 sec)
+
+mysql> insert into orders(oid,o_date,cid,amount) values(201,23-06-2017,101,250.50),(202,2-05-2017,102,255.60),(203,3-05-2017,103,305.00),(204,5-07-2017,104,5000.50),(205,10-07-2017,105,50.50);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from customer natural join orders;
++-----+-----------+------+---------+--------+-----+--------+---------+
+| cid | name      | age  | address | sal    | oid | o_date | amount  |
++-----+-----------+------+---------+--------+-----+--------+---------+
+| 101 | param     |   19 | pune    |  50000 | 201 | -2000  |  250.50 |
+| 102 | pallavi   |   20 | mumbai  | 750000 | 202 | -2020  |  255.60 |
+| 103 | Niraj     |   23 | mumbai  |  20000 | 203 | -2019  |  305.00 |
+| 104 | pratiksha |   23 | nashik  |  15000 | 204 | -2019  | 5000.50 |
+| 105 | Diksha    |   35 | jamu    |  25000 | 205 | -2014  |   50.50 |
++-----+-----------+------+---------+--------+-----+--------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select * from orders;
++-----+--------+------+---------+
+| oid | o_date | cid  | amount  |
++-----+--------+------+---------+
+| 201 | -2000  |  101 |  250.50 |
+| 202 | -2020  |  102 |  255.60 |
+| 203 | -2019  |  103 |  305.00 |
+| 204 | -2019  |  104 | 5000.50 |
+| 205 | -2014  |  105 |   50.50 |
++-----+--------+------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select * from customer;
++-----+-----------+------+---------+--------+
+| cid | name      | age  | address | sal    |
++-----+-----------+------+---------+--------+
+| 101 | param     |   19 | pune    |  50000 |
+| 102 | pallavi   |   20 | mumbai  | 750000 |
+| 103 | Niraj     |   23 | mumbai  |  20000 |
+| 104 | pratiksha |   23 | nashik  |  15000 |
+| 105 | Diksha    |   35 | jamu    |  25000 |
++-----+-----------+------+---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> delete from orders where cid=105;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from orders;
++-----+--------+------+---------+
+| oid | o_date | cid  | amount  |
++-----+--------+------+---------+
+| 201 | -2000  |  101 |  250.50 |
+| 202 | -2020  |  102 |  255.60 |
+| 203 | -2019  |  103 |  305.00 |
+| 204 | -2019  |  104 | 5000.50 |
++-----+--------+------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select * from customer inner join orders;
++-----+-----------+------+---------+--------+-----+--------+------+---------+
+| cid | name      | age  | address | sal    | oid | o_date | cid  | amount  |
++-----+-----------+------+---------+--------+-----+--------+------+---------+
+| 101 | param     |   19 | pune    |  50000 | 204 | -2019  |  104 | 5000.50 |
+| 101 | param     |   19 | pune    |  50000 | 203 | -2019  |  103 |  305.00 |
+| 101 | param     |   19 | pune    |  50000 | 202 | -2020  |  102 |  255.60 |
+| 101 | param     |   19 | pune    |  50000 | 201 | -2000  |  101 |  250.50 |
+| 102 | pallavi   |   20 | mumbai  | 750000 | 204 | -2019  |  104 | 5000.50 |
+| 102 | pallavi   |   20 | mumbai  | 750000 | 203 | -2019  |  103 |  305.00 |
+| 102 | pallavi   |   20 | mumbai  | 750000 | 202 | -2020  |  102 |  255.60 |
+| 102 | pallavi   |   20 | mumbai  | 750000 | 201 | -2000  |  101 |  250.50 |
+| 103 | Niraj     |   23 | mumbai  |  20000 | 204 | -2019  |  104 | 5000.50 |
+| 103 | Niraj     |   23 | mumbai  |  20000 | 203 | -2019  |  103 |  305.00 |
+| 103 | Niraj     |   23 | mumbai  |  20000 | 202 | -2020  |  102 |  255.60 |
+| 103 | Niraj     |   23 | mumbai  |  20000 | 201 | -2000  |  101 |  250.50 |
+| 104 | pratiksha |   23 | nashik  |  15000 | 204 | -2019  |  104 | 5000.50 |
+| 104 | pratiksha |   23 | nashik  |  15000 | 203 | -2019  |  103 |  305.00 |
+| 104 | pratiksha |   23 | nashik  |  15000 | 202 | -2020  |  102 |  255.60 |
+| 104 | pratiksha |   23 | nashik  |  15000 | 201 | -2000  |  101 |  250.50 |
+| 105 | Diksha    |   35 | jamu    |  25000 | 204 | -2019  |  104 | 5000.50 |
+| 105 | Diksha    |   35 | jamu    |  25000 | 203 | -2019  |  103 |  305.00 |
+| 105 | Diksha    |   35 | jamu    |  25000 | 202 | -2020  |  102 |  255.60 |
+| 105 | Diksha    |   35 | jamu    |  25000 | 201 | -2000  |  101 |  250.50 |
++-----+-----------+------+---------+--------+-----+--------+------+---------+
+20 rows in set (0.00 sec)
+
+mysql> SELECT orders.oid, customer.name, orders.o_date FROM orders INNER JOIN customer ON orders.cid=customer.cid;
++-----+-----------+--------+
+| oid | name      | o_date |
++-----+-----------+--------+
+| 201 | param     | -2000  |
+| 202 | pallavi   | -2020  |
+| 203 | Niraj     | -2019  |
+| 204 | pratiksha | -2019  |
++-----+-----------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from customer natural left join orders;
++-----+-----------+------+---------+--------+------+--------+---------+
+| cid | name      | age  | address | sal    | oid  | o_date | amount  |
++-----+-----------+------+---------+--------+------+--------+---------+
+| 101 | param     |   19 | pune    |  50000 |  201 | -2000  |  250.50 |
+| 102 | pallavi   |   20 | mumbai  | 750000 |  202 | -2020  |  255.60 |
+| 103 | Niraj     |   23 | mumbai  |  20000 |  203 | -2019  |  305.00 |
+| 104 | pratiksha |   23 | nashik  |  15000 |  204 | -2019  | 5000.50 |
+| 105 | Diksha    |   35 | jamu    |  25000 | NULL | NULL   |    NULL |
++-----+-----------+------+---------+--------+------+--------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select cid,name,amount,0_date from customer natural right join orders;
+ERROR 1054 (42S22): Unknown column '0_date' in 'field list'
+mysql> select cid,name,amount,o_date from customer natural right join orders;
++------+-----------+---------+--------+
+| cid  | name      | amount  | o_date |
++------+-----------+---------+--------+
+|  101 | param     |  250.50 | -2000  |
+|  102 | pallavi   |  255.60 | -2020  |
+|  103 | Niraj     |  305.00 | -2019  |
+|  104 | pratiksha | 5000.50 | -2019  |
++------+-----------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from customer natural right join orders;
++------+-----+--------+---------+-----------+------+---------+--------+
+| cid  | oid | o_date | amount  | name      | age  | address | sal    |
++------+-----+--------+---------+-----------+------+---------+--------+
+|  101 | 201 | -2000  |  250.50 | param     |   19 | pune    |  50000 |
+|  102 | 202 | -2020  |  255.60 | pallavi   |   20 | mumbai  | 750000 |
+|  103 | 203 | -2019  |  305.00 | Niraj     |   23 | mumbai  |  20000 |
+|  104 | 204 | -2019  | 5000.50 | pratiksha |   23 | nashik  |  15000 |
++------+-----+--------+---------+-----------+------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select cid,name from customer union all select amout,o_date from orders;
+ERROR 1054 (42S22): Unknown column 'amout' in 'field list'
+mysql> select cid,name from customer union all select amount,o_date from orders;
++---------+-----------+
+| cid     | name      |
++---------+-----------+
+|  101.00 | param     |
+|  102.00 | pallavi   |
+|  103.00 | Niraj     |
+|  104.00 | pratiksha |
+|  105.00 | Diksha    |
+|  250.50 | -2000     |
+|  255.60 | -2020     |
+|  305.00 | -2019     |
+| 5000.50 | -2019     |
++---------+-----------+
+9 rows in set (0.00 sec)
+
+mysql> select cid,name,amount,o_date from customer natural left join orders union all select cid,name,amount,o_date from customer natural right join orders;
++------+-----------+---------+--------+
+| cid  | name      | amount  | o_date |
++------+-----------+---------+--------+
+|  101 | param     |  250.50 | -2000  |
+|  102 | pallavi   |  255.60 | -2020  |
+|  103 | Niraj     |  305.00 | -2019  |
+|  104 | pratiksha | 5000.50 | -2019  |
+|  105 | Diksha    |    NULL | NULL   |
+|  101 | param     |  250.50 | -2000  |
+|  102 | pallavi   |  255.60 | -2020  |
+|  103 | Niraj     |  305.00 | -2019  |
+|  104 | pratiksha | 5000.50 | -2019  |
++------+-----------+---------+--------+
+9 rows in set (0.00 sec)
+
+mysql> select * from customer where name in(select name from customer where customer.sal>20000);
++-----+---------+------+---------+--------+
+| cid | name    | age  | address | sal    |
++-----+---------+------+---------+--------+
+| 101 | param   |   19 | pune    |  50000 |
+| 102 | pallavi |   20 | mumbai  | 750000 |
+| 105 | Diksha  |   35 | jamu    |  25000 |
++-----+---------+------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select * from customer;
++-----+-----------+------+---------+--------+
+| cid | name      | age  | address | sal    |
++-----+-----------+------+---------+--------+
+| 101 | param     |   19 | pune    |  50000 |
+| 102 | pallavi   |   20 | mumbai  | 750000 |
+| 103 | Niraj     |   23 | mumbai  |  20000 |
+| 104 | pratiksha |   23 | nashik  |  15000 |
+| 105 | Diksha    |   35 | jamu    |  25000 |
++-----+-----------+------+---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> create table cust12 as select * from customer;
+Query OK, 5 rows affected (0.04 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from cust12;
++-----+-----------+------+---------+--------+
+| cid | name      | age  | address | sal    |
++-----+-----------+------+---------+--------+
+| 101 | param     |   19 | pune    |  50000 |
+| 102 | pallavi   |   20 | mumbai  | 750000 |
+| 103 | Niraj     |   23 | mumbai  |  20000 |
+| 104 | pratiksha |   23 | nashik  |  15000 |
+| 105 | Diksha    |   35 | jamu    |  25000 |
++-----+-----------+------+---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> insert into cust12 select * from customer;
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from cust12;
++-----+-----------+------+---------+--------+
+| cid | name      | age  | address | sal    |
++-----+-----------+------+---------+--------+
+| 101 | param     |   19 | pune    |  50000 |
+| 102 | pallavi   |   20 | mumbai  | 750000 |
+| 103 | Niraj     |   23 | mumbai  |  20000 |
+| 104 | pratiksha |   23 | nashik  |  15000 |
+| 105 | Diksha    |   35 | jamu    |  25000 |
+| 101 | param     |   19 | pune    |  50000 |
+| 102 | pallavi   |   20 | mumbai  | 750000 |
+| 103 | Niraj     |   23 | mumbai  |  20000 |
+| 104 | pratiksha |   23 | nashik  |  15000 |
+| 105 | Diksha    |   35 | jamu    |  25000 |
++-----+-----------+------+---------+--------+
+10 rows in set (0.00 sec)
+
+mysql> update customer set sal=sal*1.01 where age in(select age from cust1 where age>18);
+ERROR 1146 (42S02): Table 'cust1.cust1' doesn't exist
+mysql> update customer set sal=sal*1.01 where age in(select age from cust1 where age>24);
+ERROR 1146 (42S02): Table 'cust1.cust1' doesn't exist
+mysql> select *from customer;
++-----+-----------+------+---------+--------+
+| cid | name      | age  | address | sal    |
++-----+-----------+------+---------+--------+
+| 101 | param     |   19 | pune    |  50000 |
+| 102 | pallavi   |   20 | mumbai  | 750000 |
+| 103 | Niraj     |   23 | mumbai  |  20000 |
+| 104 | pratiksha |   23 | nashik  |  15000 |
+| 105 | Diksha    |   35 | jamu    |  25000 |
++-----+-----------+------+---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> update customer set sal=sal*1.01 where age in(select age from cust12 where age>18);
+Query OK, 5 rows affected (0.01 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> select *from customer;
++-----+-----------+------+---------+--------+
+| cid | name      | age  | address | sal    |
++-----+-----------+------+---------+--------+
+| 101 | param     |   19 | pune    |  50500 |
+| 102 | pallavi   |   20 | mumbai  | 757500 |
+| 103 | Niraj     |   23 | mumbai  |  20200 |
+| 104 | pratiksha |   23 | nashik  |  15150 |
+| 105 | Diksha    |   35 | jamu    |  25250 |
++-----+-----------+------+---------+--------+
+5 rows in set (0.03 sec)
+
+mysql> delete from customer where age in(select age from cust12 where age<=19);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from customer;
++-----+-----------+------+---------+--------+
+| cid | name      | age  | address | sal    |
++-----+-----------+------+---------+--------+
+| 102 | pallavi   |   20 | mumbai  | 757500 |
+| 103 | Niraj     |   23 | mumbai  |  20200 |
+| 104 | pratiksha |   23 | nashik  |  15150 |
+| 105 | Diksha    |   35 | jamu    |  25250 |
++-----+-----------+------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql>
