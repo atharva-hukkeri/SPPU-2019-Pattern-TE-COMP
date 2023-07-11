@@ -1,0 +1,283 @@
+C:\Users\Acer>cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root p
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases
+    -> show databases;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'show databases' at line 2
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql> create database s1;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use s1;
+Database changed
+mysql> create table student(roll_no int(20),name varchar(30),Divi varchar(20),Branch varchar(30),city varchar(20),marks int(30),primary key(roll_no));
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> desc student
+    -> desc student;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desc student' at line 2
+mysql> DESC student;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| roll_no | int         | NO   | PRI | NULL    |       |
+| name    | varchar(30) | YES  |     | NULL    |       |
+| Divi    | varchar(20) | YES  |     | NULL    |       |
+| Branch  | varchar(30) | YES  |     | NULL    |       |
+| city    | varchar(20) | YES  |     | NULL    |       |
+| marks   | int         | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+mysql> insert into student(roll_no,name,Divi,Branch,city,marks) values(1,'Pallavi','A','Comp','Pune',60),(2,'Parmeshwar','B','Mech','Pune',59),(3,'Niraj','C','IT','Mumbai',51),(4,'Aditya','D','ENTC','Nashik',90),(5,'Hemanth','E','Civil','Rajasthan',70),(6,'Nirmal','F','Fashion','US',65),(7,'Atharva','G','Electrical','Jammu',80);
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> select name,city from student;
++------------+-----------+
+| name       | city      |
++------------+-----------+
+| Pallavi    | Pune      |
+| Parmeshwar | Pune      |
+| Niraj      | Mumbai    |
+| Aditya     | Nashik    |
+| Hemanth    | Rajasthan |
+| Nirmal     | US        |
+| Atharva    | Jammu     |
++------------+-----------+
+7 rows in set (0.00 sec)
+
+mysql> select distint name from student;
+ERROR 1054 (42S22): Unknown column 'distint' in 'field list'
+mysql> select distinct name from student;
++------------+
+| name       |
++------------+
+| Pallavi    |
+| Parmeshwar |
+| Niraj      |
+| Aditya     |
+| Hemanth    |
+| Nirmal     |
+| Atharva    |
++------------+
+7 rows in set (0.00 sec)
+
+mysql> select distinct city from student;
++-----------+
+| city      |
++-----------+
+| Pune      |
+| Mumbai    |
+| Nashik    |
+| Rajasthan |
+| US        |
+| Jammu     |
++-----------+
+6 rows in set (0.00 sec)
+
+mysql> select *from student;
++---------+------------+------+------------+-----------+-------+
+| roll_no | name       | Divi | Branch     | city      | marks |
++---------+------------+------+------------+-----------+-------+
+|       1 | Pallavi    | A    | Comp       | Pune      |    60 |
+|       2 | Parmeshwar | B    | Mech       | Pune      |    59 |
+|       3 | Niraj      | C    | IT         | Mumbai    |    51 |
+|       4 | Aditya     | D    | ENTC       | Nashik    |    90 |
+|       5 | Hemanth    | E    | Civil      | Rajasthan |    70 |
+|       6 | Nirmal     | F    | Fashion    | US        |    65 |
+|       7 | Atharva    | G    | Electrical | Jammu     |    80 |
++---------+------------+------+------------+-----------+-------+
+7 rows in set (0.00 sec)
+
+mysql> select name from student where marks>75;
++---------+
+| name    |
++---------+
+| Aditya  |
+| Atharva |
++---------+
+2 rows in set (0.00 sec)
+
+mysql> select name from student where name like '%a%';
++------------+
+| name       |
++------------+
+| Pallavi    |
+| Parmeshwar |
+| Niraj      |
+| Aditya     |
+| Hemanth    |
+| Nirmal     |
+| Atharva    |
++------------+
+7 rows in set (0.00 sec)
+
+mysql> select name from student where name like '_a%';
++------------+
+| name       |
++------------+
+| Pallavi    |
+| Parmeshwar |
++------------+
+2 rows in set (0.00 sec)
+
+mysql> select name from student where name like '%i_';
+Empty set (0.00 sec)
+
+mysql> select name from student where name like '_%i';
++---------+
+| name    |
++---------+
+| Pallavi |
++---------+
+1 row in set (0.00 sec)
+
+mysql> select name from student where marks between 50 and 60;
++------------+
+| name       |
++------------+
+| Pallavi    |
+| Parmeshwar |
+| Niraj      |
++------------+
+3 rows in set (0.00 sec)
+
+mysql> select name from student where branch='Comp' and city='Pune';
++---------+
+| name    |
++---------+
+| Pallavi |
++---------+
+1 row in set (0.00 sec)
+
+mysql> update student set branch='IT' where roll_no=7;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select *from student;
++---------+------------+------+---------+-----------+-------+
+| roll_no | name       | Divi | Branch  | city      | marks |
++---------+------------+------+---------+-----------+-------+
+|       1 | Pallavi    | A    | Comp    | Pune      |    60 |
+|       2 | Parmeshwar | B    | Mech    | Pune      |    59 |
+|       3 | Niraj      | C    | IT      | Mumbai    |    51 |
+|       4 | Aditya     | D    | ENTC    | Nashik    |    90 |
+|       5 | Hemanth    | E    | Civil   | Rajasthan |    70 |
+|       6 | Nirmal     | F    | Fashion | US        |    65 |
+|       7 | Atharva    | G    | IT      | Jammu     |    80 |
++---------+------------+------+---------+-----------+-------+
+7 rows in set (0.00 sec)
+
+mysql> delete from student where divi='E';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select *from student;
++---------+------------+------+---------+--------+-------+
+| roll_no | name       | Divi | Branch  | city   | marks |
++---------+------------+------+---------+--------+-------+
+|       1 | Pallavi    | A    | Comp    | Pune   |    60 |
+|       2 | Parmeshwar | B    | Mech    | Pune   |    59 |
+|       3 | Niraj      | C    | IT      | Mumbai |    51 |
+|       4 | Aditya     | D    | ENTC    | Nashik |    90 |
+|       6 | Nirmal     | F    | Fashion | US     |    65 |
+|       7 | Atharva    | G    | IT      | Jammu  |    80 |
++---------+------------+------+---------+--------+-------+
+6 rows in set (0.00 sec)
+
+mysql> create table TE as select roll_no,name from student;
+Query OK, 6 rows affected (0.04 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select * from TE;
++---------+------------+
+| roll_no | name       |
++---------+------------+
+|       1 | Pallavi    |
+|       2 | Parmeshwar |
+|       3 | Niraj      |
+|       4 | Aditya     |
+|       6 | Nirmal     |
+|       7 | Atharva    |
++---------+------------+
+6 rows in set (0.00 sec)
+
+mysql> (select roll_no,name from student) union (select roll_no,name from TE);
++---------+------------+
+| roll_no | name       |
++---------+------------+
+|       1 | Pallavi    |
+|       2 | Parmeshwar |
+|       3 | Niraj      |
+|       4 | Aditya     |
+|       6 | Nirmal     |
+|       7 | Atharva    |
++---------+------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT UPPER(name) FROM student;
++-------------+
+| UPPER(name) |
++-------------+
+| PALLAVI     |
+| PARMESHWAR  |
+| NIRAJ       |
+| ADITYA      |
+| NIRMAL      |
+| ATHARVA     |
++-------------+
+6 rows in set (0.00 sec)
+
+mysql> select hex(marks) from student;
++------------+
+| hex(marks) |
++------------+
+| 3C         |
+| 3B         |
+| 33         |
+| 5A         |
+| 41         |
+| 50         |
++------------+
+6 rows in set (0.00 sec)
+
+mysql> select bin(marks) from student;
++------------+
+| bin(marks) |
++------------+
+| 111100     |
+| 111011     |
+| 110011     |
+| 1011010    |
+| 1000001    |
+| 1010000    |
++------------+
+6 rows in set (0.00 sec)
+
+mysql>
