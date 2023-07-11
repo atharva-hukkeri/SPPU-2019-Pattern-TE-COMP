@@ -1,0 +1,564 @@
+Microsoft Windows [Version 10.0.19042.1237]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Acer>mongo
+MongoDB shell version v5.0.3
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("aa8d14ce-6653-4dbe-ac39-e45d9e606663") }
+MongoDB server version: 5.0.3
+================
+Warning: the "mongo" shell has been superseded by "mongosh",
+which delivers improved usability and compatibility.The "mongo" shell has been deprecated and will be removed in
+an upcoming release.
+We recommend you begin using "mongosh".
+For installation instructions, see
+https://docs.mongodb.com/mongodb-shell/install/
+================
+---
+The server generated these startup warnings when booting:
+        2021-10-03T13:58:31.928+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+---
+---
+        Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+        metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+        The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+        and anyone you share the URL with. MongoDB may use this information to make product
+        improvements and to suggest MongoDB products and deployment options to you.
+
+        To enable free monitoring, run the following command: db.enableFreeMonitoring()
+        To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+> use mdb;
+switched to db mdb
+>
+//Create
+> db.createCollection('Employee');
+{ "ok" : 1 }
+>
+//INSERT
+> db.Employee.insert({'ID':'101','Name':'Virat','Mail_ID':'v@gmail,'Age':'30','Dept':'Production','Salary':'4000'});
+uncaught exception: SyntaxError: missing } after property list :
+@(shell):1:66
+> db.Employee.insert({'ID':'101','Name':'Virat','Mail_ID':'v@gmail','Age':'30','Dept':'Production','Salary':'4000'});
+WriteResult({ "nInserted" : 1 })
+> db.Employee.insert({'ID':'102','Name':'Joe','Mail_ID':'j@gmail','Age':'25','Dept':'Production','Salary':'9000'});
+WriteResult({ "nInserted" : 1 })
+> db.Employee.insert({'ID':'103','Name':'Riya','Mail_ID':'r@gmail','Age':'33','Dept':'Development','Salary':'12000'});
+WriteResult({ "nInserted" : 1 })
+> db.Employee.insert({'ID':'104','Name':'Ken','Mail_ID':'k@gmail','Age':'28','Dept':'Accounts','Salary':'10000'});
+WriteResult({ "nInserted" : 1 })
+> db.Employee.insert({'ID':'105','Name':'Siya','Mail_ID':'s@gmail','Age':'26','Dept':'Testing','Salary':'8800'});
+WriteResult({ "nInserted" : 1 })
+>
+>
+//READ
+> db.Employee.find();
+{ "_id" : ObjectId("6159c8964974babb2653e8eb"), "ID" : "101", "Name" : "Virat", "Mail_ID" : "v@gmail", "Age" : "30", "Dept" : "Production", "Salary" : "4000" }
+{ "_id" : ObjectId("6159c8c74974babb2653e8ec"), "ID" : "102", "Name" : "Joe", "Mail_ID" : "j@gmail", "Age" : "25", "Dept" : "Production", "Salary" : "9000" }
+{ "_id" : ObjectId("6159c9544974babb2653e8ed"), "ID" : "103", "Name" : "Riya", "Mail_ID" : "r@gmail", "Age" : "33", "Dept" : "Development", "Salary" : "12000" }
+{ "_id" : ObjectId("6159c9814974babb2653e8ee"), "ID" : "104", "Name" : "Ken", "Mail_ID" : "k@gmail", "Age" : "28", "Dept" : "Accounts", "Salary" : "10000" }
+{ "_id" : ObjectId("6159c9bd4974babb2653e8ef"), "ID" : "105", "Name" : "Siya", "Mail_ID" : "s@gmail", "Age" : "26", "Dept" : "Testing", "Salary" : "8800" }
+>
+//DISPLAY IN FORMATTED MANNER
+> db.Employee.find().pretty();
+{
+        "_id" : ObjectId("6159c8964974babb2653e8eb"),
+        "ID" : "101",
+        "Name" : "Virat",
+        "Mail_ID" : "v@gmail",
+        "Age" : "30",
+        "Dept" : "Production",
+        "Salary" : "4000"
+}
+{
+        "_id" : ObjectId("6159c8c74974babb2653e8ec"),
+        "ID" : "102",
+        "Name" : "Joe",
+        "Mail_ID" : "j@gmail",
+        "Age" : "25",
+        "Dept" : "Production",
+        "Salary" : "9000"
+}
+{
+        "_id" : ObjectId("6159c9544974babb2653e8ed"),
+        "ID" : "103",
+        "Name" : "Riya",
+        "Mail_ID" : "r@gmail",
+        "Age" : "33",
+        "Dept" : "Development",
+        "Salary" : "12000"
+}
+{
+        "_id" : ObjectId("6159c9814974babb2653e8ee"),
+        "ID" : "104",
+        "Name" : "Ken",
+        "Mail_ID" : "k@gmail",
+        "Age" : "28",
+        "Dept" : "Accounts",
+        "Salary" : "10000"
+}
+{
+        "_id" : ObjectId("6159c9bd4974babb2653e8ef"),
+        "ID" : "105",
+        "Name" : "Siya",
+        "Mail_ID" : "s@gmail",
+        "Age" : "26",
+        "Dept" : "Testing",
+        "Salary" : "8800"
+}
+>
+>
+//INSERT MANY
+> db.Employee.insertMany([
+... {'ID':'106','Name':'Ron','Mail_ID':'ro@gmail','Age':'36','Dept':'Accounts','Salary':'12500'},
+... {'ID':'107','Name':'Mehak','Mail_ID':'m@gmail','Age':'32','Dept':'Development','Salary':'14000'},
+... {'ID':'108','Name':'Kevin','Mail_ID':'ke@gmail','Age':'38','Dept':'Production','Salary':'16000'}
+... ])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6159cd394974babb2653e8f0"),
+                ObjectId("6159cd394974babb2653e8f1"),
+                ObjectId("6159cd394974babb2653e8f2")
+        ]
+}
+>
+//INSERT USING SAVE()
+> db.Employee.save({'ID':'109','Name':'Kavana','Mail_ID':'kav@gmail','Age':'29','Dept':'Testing','Salary':'9000'});
+WriteResult({ "nInserted" : 1 })
+>
+> db.Employee.find().pretty();
+{
+        "_id" : ObjectId("6159c8964974babb2653e8eb"),
+        "ID" : "101",
+        "Name" : "Virat",
+        "Mail_ID" : "v@gmail",
+        "Age" : "30",
+        "Dept" : "Production",
+        "Salary" : "4000"
+}
+{
+        "_id" : ObjectId("6159c8c74974babb2653e8ec"),
+        "ID" : "102",
+        "Name" : "Joe",
+        "Mail_ID" : "j@gmail",
+        "Age" : "25",
+        "Dept" : "Production",
+        "Salary" : "9000"
+}
+{
+        "_id" : ObjectId("6159c9544974babb2653e8ed"),
+        "ID" : "103",
+        "Name" : "Riya",
+        "Mail_ID" : "r@gmail",
+        "Age" : "33",
+        "Dept" : "Development",
+        "Salary" : "12000"
+}
+{
+        "_id" : ObjectId("6159c9814974babb2653e8ee"),
+        "ID" : "104",
+        "Name" : "Ken",
+        "Mail_ID" : "k@gmail",
+        "Age" : "28",
+        "Dept" : "Accounts",
+        "Salary" : "10000"
+}
+{
+        "_id" : ObjectId("6159c9bd4974babb2653e8ef"),
+        "ID" : "105",
+        "Name" : "Siya",
+        "Mail_ID" : "s@gmail",
+        "Age" : "26",
+        "Dept" : "Testing",
+        "Salary" : "8800"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f0"),
+        "ID" : "106",
+        "Name" : "Ron",
+        "Mail_ID" : "ro@gmail",
+        "Age" : "36",
+        "Dept" : "Accounts",
+        "Salary" : "12500"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f1"),
+        "ID" : "107",
+        "Name" : "Mehak",
+        "Mail_ID" : "m@gmail",
+        "Age" : "32",
+        "Dept" : "Development",
+        "Salary" : "14000"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f2"),
+        "ID" : "108",
+        "Name" : "Kevin",
+        "Mail_ID" : "ke@gmail",
+        "Age" : "38",
+        "Dept" : "Production",
+        "Salary" : "16000"
+}
+{
+        "_id" : ObjectId("6159ce264974babb2653e8f3"),
+        "ID" : "109",
+        "Name" : "Kavana",
+        "Mail_ID" : "kav@gmail",
+        "Age" : "29",
+        "Dept" : "Testing",
+        "Salary" : "9000"
+}
+>
+>
+//READ WITH CONDITION
+> db.Employee.find({$and:[{"Name":"Joe"},{"Age":"25"}]});
+{ "_id" : ObjectId("6159c8c74974babb2653e8ec"), "ID" : "102", "Name" : "Joe", "Mail_ID" : "j@gmail", "Age" : "25", "Dept" : "Production", "Salary" : "9000" }
+> db.Employee.find({$and:[{"Name":"Joe"},{"Age":"25"}]}).pretty();
+{
+        "_id" : ObjectId("6159c8c74974babb2653e8ec"),
+        "ID" : "102",
+        "Name" : "Joe",
+        "Mail_ID" : "j@gmail",
+        "Age" : "25",
+        "Dept" : "Production",
+        "Salary" : "9000"
+}
+>
+>
+//GREATER THAN
+> db.Employee.find({"Salary":{$gt:5000}}).pretty();
+> db.Employee.find({"Salary":{$gt:"5000"}}).pretty();
+{
+        "_id" : ObjectId("6159c8c74974babb2653e8ec"),
+        "ID" : "102",
+        "Name" : "Joe",
+        "Mail_ID" : "j@gmail",
+        "Age" : "25",
+        "Dept" : "Production",
+        "Salary" : "9000"
+}
+{
+        "_id" : ObjectId("6159c9bd4974babb2653e8ef"),
+        "ID" : "105",
+        "Name" : "Siya",
+        "Mail_ID" : "s@gmail",
+        "Age" : "26",
+        "Dept" : "Testing",
+        "Salary" : "8800"
+}
+{
+        "_id" : ObjectId("6159ce264974babb2653e8f3"),
+        "ID" : "109",
+        "Name" : "Kavana",
+        "Mail_ID" : "kav@gmail",
+        "Age" : "29",
+        "Dept" : "Testing",
+        "Salary" : "9000"
+}
+>
+>
+>
+//UPDATE
+> db.Employee.update({"Name":"Joe"},{$set:{"Dept":"Operations"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.Employee.find({$and:[{"Name":"Joe"},{"Age":"25"}]}).pretty();
+{
+        "_id" : ObjectId("6159c8c74974babb2653e8ec"),
+        "ID" : "102",
+        "Name" : "Joe",
+        "Mail_ID" : "j@gmail",
+        "Age" : "25",
+        "Dept" : "Operations",
+        "Salary" : "9000"
+}
+>
+>
+>
+//INCREMENT STATEMENT
+> db.Employee.update({"Name":"Joe"},{$inc:{"Salary":"2000"}})
+WriteResult({
+        "nMatched" : 0,
+        "nUpserted" : 0,
+        "nModified" : 0,
+        "writeError" : {
+                "code" : 14,
+                "errmsg" : "Cannot increment with non-numeric argument: {Salary: \"2000\"}"
+        }
+})
+>
+>
+> db.Employee.update({"Name":"Joe"},{$inc:{"Salary":2000}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.Employee.find({$and:[{"Name":"Joe"},{"Age":"25"}]}).pretty();
+{
+        "_id" : ObjectId("6159c8c74974babb2653e8ec"),
+        "ID" : "102",
+        "Name" : "Joe",
+        "Mail_ID" : "j@gmail",
+        "Age" : "25",
+        "Dept" : "Operations",
+        "Salary" : 11000
+}
+>
+>
+//ADD TO SET MODIFIER with update
+> db.Employee.update({"Name":"Joe"},{$addToSet:{"Mail":["joe@gmail"]}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.Employee.find({$and:[{"Name":"Joe"},{"Age":"25"}]}).pretty();
+{
+        "_id" : ObjectId("6159c8c74974babb2653e8ec"),
+        "ID" : "102",
+        "Name" : "Joe",
+        "Mail_ID" : "j@gmail",
+        "Age" : "25",
+        "Dept" : "Operations",
+        "Salary" : 11000,
+        "Mail" : [
+                [
+                        "joe@gmail"
+                ]
+        ]
+}
+>
+>
+>
+//REMOVE
+> db.Employee.remove({'Dept':'Operations'});
+WriteResult({ "nRemoved" : 1 })
+> db.Employee.find().pretty();
+{
+        "_id" : ObjectId("6159c8964974babb2653e8eb"),
+        "ID" : "101",
+        "Name" : "Virat",
+        "Mail_ID" : "v@gmail",
+        "Age" : "30",
+        "Dept" : "Production",
+        "Salary" : "4000"
+}
+{
+        "_id" : ObjectId("6159c9544974babb2653e8ed"),
+        "ID" : "103",
+        "Name" : "Riya",
+        "Mail_ID" : "r@gmail",
+        "Age" : "33",
+        "Dept" : "Development",
+        "Salary" : "12000"
+}
+{
+        "_id" : ObjectId("6159c9814974babb2653e8ee"),
+        "ID" : "104",
+        "Name" : "Ken",
+        "Mail_ID" : "k@gmail",
+        "Age" : "28",
+        "Dept" : "Accounts",
+        "Salary" : "10000"
+}
+{
+        "_id" : ObjectId("6159c9bd4974babb2653e8ef"),
+        "ID" : "105",
+        "Name" : "Siya",
+        "Mail_ID" : "s@gmail",
+        "Age" : "26",
+        "Dept" : "Testing",
+        "Salary" : "8800"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f0"),
+        "ID" : "106",
+        "Name" : "Ron",
+        "Mail_ID" : "ro@gmail",
+        "Age" : "36",
+        "Dept" : "Accounts",
+        "Salary" : "12500"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f1"),
+        "ID" : "107",
+        "Name" : "Mehak",
+        "Mail_ID" : "m@gmail",
+        "Age" : "32",
+        "Dept" : "Development",
+        "Salary" : "14000"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f2"),
+        "ID" : "108",
+        "Name" : "Kevin",
+        "Mail_ID" : "ke@gmail",
+        "Age" : "38",
+        "Dept" : "Production",
+        "Salary" : "16000"
+}
+{
+        "_id" : ObjectId("6159ce264974babb2653e8f3"),
+        "ID" : "109",
+        "Name" : "Kavana",
+        "Mail_ID" : "kav@gmail",
+        "Age" : "29",
+        "Dept" : "Testing",
+        "Salary" : "9000"
+}
+>
+>
+//SORT
+> db.Employee.find().sort({"Name":1});
+{ "_id" : ObjectId("6159ce264974babb2653e8f3"), "ID" : "109", "Name" : "Kavana", "Mail_ID" : "kav@gmail", "Age" : "29", "Dept" : "Testing", "Salary" : "9000" }
+{ "_id" : ObjectId("6159c9814974babb2653e8ee"), "ID" : "104", "Name" : "Ken", "Mail_ID" : "k@gmail", "Age" : "28", "Dept" : "Accounts", "Salary" : "10000" }
+{ "_id" : ObjectId("6159cd394974babb2653e8f2"), "ID" : "108", "Name" : "Kevin", "Mail_ID" : "ke@gmail", "Age" : "38", "Dept" : "Production", "Salary" : "16000" }
+{ "_id" : ObjectId("6159cd394974babb2653e8f1"), "ID" : "107", "Name" : "Mehak", "Mail_ID" : "m@gmail", "Age" : "32", "Dept" : "Development", "Salary" : "14000" }
+{ "_id" : ObjectId("6159c9544974babb2653e8ed"), "ID" : "103", "Name" : "Riya", "Mail_ID" : "r@gmail", "Age" : "33", "Dept" : "Development", "Salary" : "12000" }
+{ "_id" : ObjectId("6159cd394974babb2653e8f0"), "ID" : "106", "Name" : "Ron", "Mail_ID" : "ro@gmail", "Age" : "36", "Dept" : "Accounts", "Salary" : "12500" }
+{ "_id" : ObjectId("6159c9bd4974babb2653e8ef"), "ID" : "105", "Name" : "Siya", "Mail_ID" : "s@gmail", "Age" : "26", "Dept" : "Testing", "Salary" : "8800" }
+{ "_id" : ObjectId("6159c8964974babb2653e8eb"), "ID" : "101", "Name" : "Virat", "Mail_ID" : "v@gmail", "Age" : "30", "Dept" : "Production", "Salary" : "4000" }
+> db.Employee.find().sort({"Name":1}).pretty();
+{
+        "_id" : ObjectId("6159ce264974babb2653e8f3"),
+        "ID" : "109",
+        "Name" : "Kavana",
+        "Mail_ID" : "kav@gmail",
+        "Age" : "29",
+        "Dept" : "Testing",
+        "Salary" : "9000"
+}
+{
+        "_id" : ObjectId("6159c9814974babb2653e8ee"),
+        "ID" : "104",
+        "Name" : "Ken",
+        "Mail_ID" : "k@gmail",
+        "Age" : "28",
+        "Dept" : "Accounts",
+        "Salary" : "10000"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f2"),
+        "ID" : "108",
+        "Name" : "Kevin",
+        "Mail_ID" : "ke@gmail",
+        "Age" : "38",
+        "Dept" : "Production",
+        "Salary" : "16000"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f1"),
+        "ID" : "107",
+        "Name" : "Mehak",
+        "Mail_ID" : "m@gmail",
+        "Age" : "32",
+        "Dept" : "Development",
+        "Salary" : "14000"
+}
+{
+        "_id" : ObjectId("6159c9544974babb2653e8ed"),
+        "ID" : "103",
+        "Name" : "Riya",
+        "Mail_ID" : "r@gmail",
+        "Age" : "33",
+        "Dept" : "Development",
+        "Salary" : "12000"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f0"),
+        "ID" : "106",
+        "Name" : "Ron",
+        "Mail_ID" : "ro@gmail",
+        "Age" : "36",
+        "Dept" : "Accounts",
+        "Salary" : "12500"
+}
+{
+        "_id" : ObjectId("6159c9bd4974babb2653e8ef"),
+        "ID" : "105",
+        "Name" : "Siya",
+        "Mail_ID" : "s@gmail",
+        "Age" : "26",
+        "Dept" : "Testing",
+        "Salary" : "8800"
+}
+{
+        "_id" : ObjectId("6159c8964974babb2653e8eb"),
+        "ID" : "101",
+        "Name" : "Virat",
+        "Mail_ID" : "v@gmail",
+        "Age" : "30",
+        "Dept" : "Production",
+        "Salary" : "4000"
+}
+>
+>
+>
+//DISPLAY with LIMIT
+> db.Employee.find().limit(3).pretty();
+{
+        "_id" : ObjectId("6159c8964974babb2653e8eb"),
+        "ID" : "101",
+        "Name" : "Virat",
+        "Mail_ID" : "v@gmail",
+        "Age" : "30",
+        "Dept" : "Production",
+        "Salary" : "4000"
+}
+{
+        "_id" : ObjectId("6159c9544974babb2653e8ed"),
+        "ID" : "103",
+        "Name" : "Riya",
+        "Mail_ID" : "r@gmail",
+        "Age" : "33",
+        "Dept" : "Development",
+        "Salary" : "12000"
+}
+{
+        "_id" : ObjectId("6159c9814974babb2653e8ee"),
+        "ID" : "104",
+        "Name" : "Ken",
+        "Mail_ID" : "k@gmail",
+        "Age" : "28",
+        "Dept" : "Accounts",
+        "Salary" : "10000"
+}
+>
+>
+>
+>
+//SKIP
+> db.Employee.find().skip(4).pretty();
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f0"),
+        "ID" : "106",
+        "Name" : "Ron",
+        "Mail_ID" : "ro@gmail",
+        "Age" : "36",
+        "Dept" : "Accounts",
+        "Salary" : "12500"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f1"),
+        "ID" : "107",
+        "Name" : "Mehak",
+        "Mail_ID" : "m@gmail",
+        "Age" : "32",
+        "Dept" : "Development",
+        "Salary" : "14000"
+}
+{
+        "_id" : ObjectId("6159cd394974babb2653e8f2"),
+        "ID" : "108",
+        "Name" : "Kevin",
+        "Mail_ID" : "ke@gmail",
+        "Age" : "38",
+        "Dept" : "Production",
+        "Salary" : "16000"
+}
+{
+        "_id" : ObjectId("6159ce264974babb2653e8f3"),
+        "ID" : "109",
+        "Name" : "Kavana",
+        "Mail_ID" : "kav@gmail",
+        "Age" : "29",
+        "Dept" : "Testing",
+        "Salary" : "9000"
+}
+>
+>
+>

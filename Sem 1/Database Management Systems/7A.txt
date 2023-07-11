@@ -1,0 +1,129 @@
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| cust1              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| s1                 |
+| sys                |
+| teacher            |
++--------------------+
+7 rows in set (0.01 sec)
+
+mysql> use s1;
+Database changed
+mysql> show tables;
++--------------+
+| Tables_in_s1 |
++--------------+
+| borrower     |
+| customer     |
+| fine         |
+| n_rollcall   |
+| o_rollcall   |
+| student      |
+| te           |
++--------------+
+7 rows in set (0.01 sec)
+
+mysql> create table stud_marks(roll_no int,name varchar(20),total_marks varchar(20));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table stud_result(roll_no int,name varchar(20),class varchar(20));
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> insert into stud_marks values('1','Akshay','980');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into stud_marks values('2','Rohan','1100');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into stud_marks values('3','Riya','800');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into stud_marks values('4','Sara','750');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into stud_marks values('5','Shanaya','910');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from stud_marks;
++---------+---------+-------------+
+| roll_no | name    | total_marks |
++---------+---------+-------------+
+|       1 | Akshay  | 980         |
+|       2 | Rohan   | 1100        |
+|       3 | Riya    | 800         |
+|       4 | Sara    | 750         |
+|       5 | Shanaya | 910         |
++---------+---------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> delimiter $
+mysql> create procedure proc_grade(in marks int,out class char(20))
+    -> begin
+    -> if(marks>=825 and marks<=899) THEN
+    -> set class='HSC';
+    -> end if;
+    -> if(marks>=900 and marks<=989) THEN
+    -> set class='FC';
+    -> end if;
+    -> if(marks<=1500 and marks>=990) THEN
+    -> set class='Distinction';
+    -> end if;
+    -> end;
+    -> $
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create function func_grade(r1 int)
+    -> returns int
+    -> begin
+    -> declare fmarks integer;
+    -> declare grade varchar(20);
+    -> declare stud_name varchar(20);
+    -> select stud_marks.total_marks,stud_marks.name into fmarks,stud_name from stud_marks where stud_marks.roll_no=r1;
+    -> call proc_grade(fmarks,grade);
+    -> insert into stud_result values(r1,stud_name,grade);
+    -> return r1;
+    -> end;
+    -> $
+ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+mysql> SET GLOBAL log_bin_trust_function_creators = 1;
+    -> create function func_grade(r1 int)
+    -> returns int
+    -> begin
+    -> declare fmarks integer;
+    -> declare grade varchar(20);
+    -> declare stud_name varchar(20);
+    -> select stud_marks.total_marks,stud_marks.name into fmarks,stud_name from stud_marks where stud_marks.roll_no=r1;
+    -> call proc_grade(fmarks,grade);
+    -> insert into stud_result values(r1,stud_name,grade);
+    -> return r1;
+    -> end;
+    -> $
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select func_grade(2);
+    -> $
++---------------+
+| func_grade(2) |
++---------------+
+|             2 |
++---------------+
+1 row in set (0.02 sec)
+
+mysql> select * from stud_result;
+    -> $
++---------+-------+-------------+
+| roll_no | name  | class       |
++---------+-------+-------------+
+|       2 | Rohan | Distinction |
++---------+-------+-------------+
+1 row in set (0.00 sec)
+
+mysql>

@@ -1,0 +1,141 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| cust1              |
+| information_schema |
+| miniproject        |
+| mysql              |
+| performance_schema |
+| s1                 |
+| sys                |
+| teacher            |
++--------------------+
+8 rows in set (0.02 sec)
+
+mysql> use cust1;
+Database changed
+mysql> show tables;
++-----------------+
+| Tables_in_cust1 |
++-----------------+
+| cust12          |
+| customer        |
+| orders          |
++-----------------+
+3 rows in set (0.01 sec)
+
+mysql> create table library(bno int,name varchar(20),author varchar(20),allowed_days int);
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> insert into library values(1,'DBMS','Rohan',5)
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into library values(2,'TOC','Kevin',10);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into library values(3,'SPOS','Riaa',15);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from library;
++------+------+--------+--------------+
+| bno  | name | author | allowed_days |
++------+------+--------+--------------+
+|    1 | DBMS | Rohan  |            5 |
+|    2 | TOC  | Kevin  |           10 |
+|    3 | SPOS | Riaa   |           15 |
++------+------+--------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> create table library_audit(bno int,old_allowed_days varchar(20));
+Query OK, 0 rows affected (0.04 sec)
+
+\\INSERT
+mysql> delimiter $
+mysql> create trigger t1_insert before insert on library for each row
+    -> begin
+    -> insert into library_audit values(new.bno,new.allowed_days);
+    -> end;
+    -> $
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into library values(4,'IOT','Harsh',25); $
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from library_audit;
+    -> $
++------+------------------+
+| bno  | old_allowed_days |
++------+------------------+
+|    4 | 25               |
++------+------------------+
+1 row in set (0.00 sec)
+
+\\DELETE
+mysql> delimiter $
+mysql> create trigger t1_delete after delete on library for each row
+    -> begin
+    -> delete from library_audit where bno=old.bno;
+    -> end;
+    -> $
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delete from library where bno=3;
+    -> $
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from library;
+    -> $
++------+------+--------+--------------+
+| bno  | name | author | allowed_days |
++------+------+--------+--------------+
+|    1 | DBMS | Rohan  |            5 |
+|    2 | TOC  | Kevin  |           10 |
+|    4 | IOT  | Harsh  |           25 |
++------+------+--------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> delete from library where bno=4;$
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from library_audit;
+    -> $
+Empty set (0.00 sec)
+
+\\UPDATE
+
+mysql> delimiter $
+mysql> create trigger t1_update after update on library for each row
+    -> begin
+    -> update library_audit
+    -> set bno=new.bno where bno=old.bno;
+    -> end;
+    -> $
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into library values(4,'IOT','Riaa',25);$
+Query OK, 1 row affected (0.01 sec)
+
+mysql> update library set bno=3 where bno=4;$
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from library;
+    -> $
++------+------+--------+--------------+
+| bno  | name | author | allowed_days |
++------+------+--------+--------------+
+|    1 | DBMS | Rohan  |            5 |
+|    2 | TOC  | Kevin  |           10 |
+|    3 | IOT  | Riaa   |           25 |
++------+------+--------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from library_audit;$
++------+------------------+
+| bno  | old_allowed_days |
++------+------------------+
+|    3 | 25               |
++------+------------------+
+1 row in set (0.00 sec)

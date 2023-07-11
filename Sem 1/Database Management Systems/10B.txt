@@ -1,0 +1,519 @@
+Microsoft Windows [Version 10.0.19042.1237]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Acer>mongo
+MongoDB shell version v5.0.3
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("dc70d291-1d2f-4b64-888c-eaf4dec234cd") }
+MongoDB server version: 5.0.3
+================
+Warning: the "mongo" shell has been superseded by "mongosh",
+which delivers improved usability and compatibility.The "mongo" shell has been deprecated and will be removed in
+an upcoming release.
+We recommend you begin using "mongosh".
+For installation instructions, see
+https://docs.mongodb.com/mongodb-shell/install/
+================
+---
+The server generated these startup warnings when booting:
+        2021-10-07T01:43:19.580+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+---
+---
+        Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+        metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+        The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+        and anyone you share the URL with. MongoDB may use this information to make product
+        improvements and to suggest MongoDB products and deployment options to you.
+
+        To enable free monitoring, run the following command: db.enableFreeMonitoring()
+        To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+mdb     0.000GB
+> use mbd;
+switched to db mbd
+> db.createCollection('product');
+{ "ok" : 1 }
+>
+> db.product.insert({'Name':'Laptop','Company':'Acer','Cost':68000});
+WriteResult({ "nInserted" : 1 })
+> db.product.insert({'Name':'Mobile','Company':'OnePlus','Cost':52000});
+WriteResult({ "nInserted" : 1 })
+> db.product.insert({'Name':'TV','Company':'Samsung','Cost':58000});
+WriteResult({ "nInserted" : 1 })
+> db.product.insert({'Name':'AC','Company':'Voltas','Cost':40000});
+WriteResult({ "nInserted" : 1 })
+> db.product.insert({'Name':'Mobile','Company':'Samsung','Cost':25000});
+WriteResult({ "nInserted" : 1 })
+>
+> db.product.find().pretty()
+{
+        "_id" : ObjectId("6162d1298d0065a361d10424"),
+        "Name" : "Laptop",
+        "Company" : "Acer",
+        "Cost" : 68000
+}
+{
+        "_id" : ObjectId("6162d1518d0065a361d10425"),
+        "Name" : "Mobile",
+        "Company" : "OnePlus",
+        "Cost" : 52000
+}
+{
+        "_id" : ObjectId("6162d16d8d0065a361d10426"),
+        "Name" : "TV",
+        "Company" : "Samsung",
+        "Cost" : 58000
+}
+{
+        "_id" : ObjectId("6162d1bd8d0065a361d10427"),
+        "Name" : "AC",
+        "Company" : "Voltas",
+        "Cost" : 40000
+}
+{
+        "_id" : ObjectId("6162d38e8d0065a361d10428"),
+        "Name" : "Mobile",
+        "Company" : "Samsung",
+        "Cost" : 25000
+}
+>
+>
+//MINIMUM MAXIMUM PRICE OF SAME COMPANY
+> db.product.aggregate({'$group':{'_id':'$Company','maxprice':{'$max':'$Cost'},'minprice':{'$min':'$Cost'}}})
+{ "_id" : "OnePlus", "maxprice" : 52000, "minprice" : 52000 }
+{ "_id" : "Samsung", "maxprice" : 58000, "minprice" : 25000 }
+{ "_id" : "Voltas", "maxprice" : 40000, "minprice" : 40000 }
+{ "_id" : "Acer", "maxprice" : 68000, "minprice" : 68000 }
+>
+>
+>
+//SORTED RESULT ON THE BASIS OF COMPANY
+> db.product.aggregate({'$group':{'_id':'$Company'}},{'$sort':{'Company':1}})
+{ "_id" : "OnePlus" }
+{ "_id" : "Samsung" }
+{ "_id" : "Voltas" }
+{ "_id" : "Acer" }
+> db.product.aggregate({'$group':{'_id':'$Company'}},{'$sort':{'Cost':1}})
+{ "_id" : "Acer" }
+{ "_id" : "Samsung" }
+{ "_id" : "Voltas" }
+{ "_id" : "OnePlus" }
+>
+>
+//DISPLAY NO. OF DOCUMENTS
+> db.product.count()
+5
+>
+>
+//DISPLAY DISTINCT COMPANY NAMES
+> db.product.distinct('Company')
+[ "Acer", "OnePlus", "Samsung", "Voltas" ]
+>
+>
+//COMPANY NAME WITH COUNT
+> db.product.aggregate([{$count:"Company"}])
+{ "Company" : 5 }
+>
+>
+> db.product.aggregate([{$group:{_id:'$Company',count:{$sum:1}}}])
+{ "_id" : "OnePlus", "count" : 1 }
+{ "_id" : "Acer", "count" : 1 }
+{ "_id" : "Samsung", "count" : 2 }
+{ "_id" : "Voltas", "count" : 1 }
+>
+>
+//LIMIT RESULT
+> db.product.aggregate({$limit:1})
+{ "_id" : ObjectId("6162d1298d0065a361d10424"), "Name" : "Laptop", "Company" : "Acer", "Cost" : 68000 }
+> db.product.aggregate({$skip:1})
+{ "_id" : ObjectId("6162d1518d0065a361d10425"), "Name" : "Mobile", "Company" : "OnePlus", "Cost" : 52000 }
+{ "_id" : ObjectId("6162d16d8d0065a361d10426"), "Name" : "TV", "Company" : "Samsung", "Cost" : 58000 }
+{ "_id" : ObjectId("6162d1bd8d0065a361d10427"), "Name" : "AC", "Company" : "Voltas", "Cost" : 40000 }
+{ "_id" : ObjectId("6162d38e8d0065a361d10428"), "Name" : "Mobile", "Company" : "Samsung", "Cost" : 25000 }
+>
+//SKIP 2 DOCUMENTS
+> db.product.aggregate({$skip:2})
+{ "_id" : ObjectId("6162d16d8d0065a361d10426"), "Name" : "TV", "Company" : "Samsung", "Cost" : 58000 }
+{ "_id" : ObjectId("6162d1bd8d0065a361d10427"), "Name" : "AC", "Company" : "Voltas", "Cost" : 40000 }
+{ "_id" : ObjectId("6162d38e8d0065a361d10428"), "Name" : "Mobile", "Company" : "Samsung", "Cost" : 25000 }
+>
+>
+#### STAFF COLLECTION ####
+> db.createCollection('staff')
+{ "ok" : 1 }
+>
+//INSERT USING FOR LOOP
+> for(i=0;i<10;i++){db.staff.insert({Tid:i,Tname:'Teacher'+i,age:Math.floor(Math.random()*120),DOJ:new Date()})}
+WriteResult({ "nInserted" : 1 })
+>
+> db.staff.find().pretty()
+{
+        "_id" : ObjectId("6162dfa88d0065a361d1042e"),
+        "Tid" : 0,
+        "Tname" : "Teacher0",
+        "age" : 8,
+        "DOJ" : ISODate("2021-10-10T12:42:16.644Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d1042f"),
+        "Tid" : 1,
+        "Tname" : "Teacher1",
+        "age" : 83,
+        "DOJ" : ISODate("2021-10-10T12:42:16.645Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10430"),
+        "Tid" : 2,
+        "Tname" : "Teacher2",
+        "age" : 67,
+        "DOJ" : ISODate("2021-10-10T12:42:16.646Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10431"),
+        "Tid" : 3,
+        "Tname" : "Teacher3",
+        "age" : 65,
+        "DOJ" : ISODate("2021-10-10T12:42:16.646Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10432"),
+        "Tid" : 4,
+        "Tname" : "Teacher4",
+        "age" : 47,
+        "DOJ" : ISODate("2021-10-10T12:42:16.646Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10433"),
+        "Tid" : 5,
+        "Tname" : "Teacher5",
+        "age" : 5,
+        "DOJ" : ISODate("2021-10-10T12:42:16.647Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10434"),
+        "Tid" : 6,
+        "Tname" : "Teacher6",
+        "age" : 62,
+        "DOJ" : ISODate("2021-10-10T12:42:16.647Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10435"),
+        "Tid" : 7,
+        "Tname" : "Teacher7",
+        "age" : 112,
+        "DOJ" : ISODate("2021-10-10T12:42:16.648Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10436"),
+        "Tid" : 8,
+        "Tname" : "Teacher8",
+        "age" : 74,
+        "DOJ" : ISODate("2021-10-10T12:42:16.648Z")
+}
+{
+        "_id" : ObjectId("6162dfa88d0065a361d10437"),
+        "Tid" : 9,
+        "Tname" : "Teacher9",
+        "age" : 30,
+        "DOJ" : ISODate("2021-10-10T12:42:16.648Z")
+}
+>
+>
+//FIND DOCUMENT 
+> db.staff.find({Tid:2,Tname:{'$gt':'Teacher0','$lt':'Teacher9'}}).explain()
+{
+        "explainVersion" : "1",
+        "queryPlanner" : {
+                "namespace" : "mbd.staff",
+                "indexFilterSet" : false,
+                "parsedQuery" : {
+                        "$and" : [
+                                {
+                                        "Tid" : {
+                                                "$eq" : 2
+                                        }
+                                },
+                                {
+                                        "Tname" : {
+                                                "$lt" : "Teacher9"
+                                        }
+                                },
+                                {
+                                        "Tname" : {
+                                                "$gt" : "Teacher0"
+                                        }
+                                }
+                        ]
+                },
+                "queryHash" : "E0571925",
+                "planCacheKey" : "50992171",
+                "maxIndexedOrSolutionsReached" : false,
+                "maxIndexedAndSolutionsReached" : false,
+                "maxScansToExplodeReached" : false,
+                "winningPlan" : {
+                        "stage" : "COLLSCAN",
+                        "filter" : {
+                                "$and" : [
+                                        {
+                                                "Tid" : {
+                                                        "$eq" : 2
+                                                }
+                                        },
+                                        {
+                                                "Tname" : {
+                                                        "$lt" : "Teacher9"
+                                                }
+                                        },
+                                        {
+                                                "Tname" : {
+                                                        "$gt" : "Teacher0"
+                                                }
+                                        }
+                                ]
+                        },
+                        "direction" : "forward"
+                },
+                "rejectedPlans" : [ ]
+        },
+        "command" : {
+                "find" : "staff",
+                "filter" : {
+                        "Tid" : 2,
+                        "Tname" : {
+                                "$gt" : "Teacher0",
+                                "$lt" : "Teacher9"
+                        }
+                },
+                "$db" : "mbd"
+        },
+        "serverInfo" : {
+                "host" : "LAPTOP-7OREME00",
+                "port" : 27017,
+                "version" : "5.0.3",
+                "gitVersion" : "657fea5a61a74d7a79df7aff8e4bcf0bc742b748"
+        },
+        "serverParameters" : {
+                "internalQueryFacetBufferSizeBytes" : 104857600,
+                "internalQueryFacetMaxOutputDocSizeBytes" : 104857600,
+                "internalLookupStageIntermediateDocumentMaxSizeBytes" : 104857600,
+                "internalDocumentSourceGroupMaxMemoryBytes" : 104857600,
+                "internalQueryMaxBlockingSortMemoryUsageBytes" : 104857600,
+                "internalQueryProhibitBlockingMergeOnMongoS" : 0,
+                "internalQueryMaxAddToSetBytes" : 104857600,
+                "internalDocumentSourceSetWindowFieldsMaxMemoryBytes" : 104857600
+        },
+        "ok" : 1
+}
+>
+>
+//CREATE INDEX
+> db.staff.createIndex({'Tname':-1})
+{
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+>
+> db.staff.getIndexes()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "Tname" : -1
+                },
+                "name" : "Tname_-1"
+        }
+]
+>
+> db.staff.createIndex({'age':1,'Tname':1})
+{
+        "numIndexesBefore" : 2,
+        "numIndexesAfter" : 3,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+>
+> db.staff.getIndexes()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "Tname" : -1
+                },
+                "name" : "Tname_-1"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "age" : 1,
+                        "Tname" : 1
+                },
+                "name" : "age_1_Tname_1"
+        }
+]
+>
+>
+>
+//DROP INDEX QUERY
+> db.staff.dropIndex('age_1_Tname_1')
+{ "nIndexesWas" : 3, "ok" : 1 }
+> db.staff.find({age:40,Tname:{'$gte':'Teacher0','$lte':'Teacher9'}}).explain()
+{
+        "explainVersion" : "1",
+        "queryPlanner" : {
+                "namespace" : "mbd.staff",
+                "indexFilterSet" : false,
+                "parsedQuery" : {
+                        "$and" : [
+                                {
+                                        "age" : {
+                                                "$eq" : 40
+                                        }
+                                },
+                                {
+                                        "Tname" : {
+                                                "$lte" : "Teacher9"
+                                        }
+                                },
+                                {
+                                        "Tname" : {
+                                                "$gte" : "Teacher0"
+                                        }
+                                }
+                        ]
+                },
+                "queryHash" : "73C48CD2",
+                "planCacheKey" : "00371AFE",
+                "maxIndexedOrSolutionsReached" : false,
+                "maxIndexedAndSolutionsReached" : false,
+                "maxScansToExplodeReached" : false,
+                "winningPlan" : {
+                        "stage" : "FETCH",
+                        "filter" : {
+                                "age" : {
+                                        "$eq" : 40
+                                }
+                        },
+                        "inputStage" : {
+                                "stage" : "IXSCAN",
+                                "keyPattern" : {
+                                        "Tname" : -1
+                                },
+                                "indexName" : "Tname_-1",
+                                "isMultiKey" : false,
+                                "multiKeyPaths" : {
+                                        "Tname" : [ ]
+                                },
+                                "isUnique" : false,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                        "Tname" : [
+                                                "[\"Teacher9\", \"Teacher0\"]"
+                                        ]
+                                }
+                        }
+                },
+                "rejectedPlans" : [ ]
+        },
+        "command" : {
+                "find" : "staff",
+                "filter" : {
+                        "age" : 40,
+                        "Tname" : {
+                                "$gte" : "Teacher0",
+                                "$lte" : "Teacher9"
+                        }
+                },
+                "$db" : "mbd"
+        },
+        "serverInfo" : {
+                "host" : "LAPTOP-7OREME00",
+                "port" : 27017,
+                "version" : "5.0.3",
+                "gitVersion" : "657fea5a61a74d7a79df7aff8e4bcf0bc742b748"
+        },
+        "serverParameters" : {
+                "internalQueryFacetBufferSizeBytes" : 104857600,
+                "internalQueryFacetMaxOutputDocSizeBytes" : 104857600,
+                "internalLookupStageIntermediateDocumentMaxSizeBytes" : 104857600,
+                "internalDocumentSourceGroupMaxMemoryBytes" : 104857600,
+                "internalQueryMaxBlockingSortMemoryUsageBytes" : 104857600,
+                "internalQueryProhibitBlockingMergeOnMongoS" : 0,
+                "internalQueryMaxAddToSetBytes" : 104857600,
+                "internalDocumentSourceSetWindowFieldsMaxMemoryBytes" : 104857600
+        },
+        "ok" : 1
+}
+>
+//UNIQUE INDEX
+> db.staff.createIndex({Tname:1},{unique:1})
+{
+        "numIndexesBefore" : 2,
+        "numIndexesAfter" : 3,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+>
+>
+> db.staff.getIndexes()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "Tname" : -1
+                },
+                "name" : "Tname_-1"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "Tname" : 1
+                },
+                "name" : "Tname_1",
+                "unique" : true
+        }
+]
+>
+>
+>
+//INSERTING DUPLICATE DOCUMENT
+> db.staff.insert({'Tid':5,'Tname':'Teacher5','age':5})
+WriteResult({
+        "nInserted" : 0,
+        "writeError" : {
+                "code" : 11000,
+                "errmsg" : "E11000 duplicate key error collection: mbd.staff index: Tname_1 dup key: { Tname: \"Teacher5\" }"
+        }
+})
+>
+>

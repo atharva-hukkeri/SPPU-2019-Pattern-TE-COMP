@@ -1,0 +1,120 @@
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| cust1              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| s1                 |
+| sys                |
+| teacher            |
++--------------------+
+7 rows in set (0.00 sec)
+
+mysql> use s1;
+Database changed
+mysql> show tables;
++--------------+
+| Tables_in_s1 |
++--------------+
+| borrower     |
+| customer     |
+| fine         |
+| student      |
+| te           |
++--------------+
+5 rows in set (0.00 sec)
+
+mysql> create table o_rollcall(roll_no int,name varchar(20));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> create table n_rollcall(roll_no int,name varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into o_rollcall values('1','Ram');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into o_rollcall values('2','Siya');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into o_rollcall values('3','Piya');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into o_rollcall values('4','Pramod');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into o_rollcall values('5','Riya');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into o_rollcall values('6','Rohan');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into n_rollcall values('6','Rohan');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into n_rollcall values('5','Riya');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select *from o_rollcall;
++---------+--------+
+| roll_no | name   |
++---------+--------+
+|       1 | Ram    |
+|       2 | Siya   |
+|       3 | Piya   |
+|       4 | Pramod |
+|       5 | Riya   |
+|       6 | Rohan  |
++---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> select *from n_rollcall;
++---------+-------+
+| roll_no | name  |
++---------+-------+
+|       6 | Rohan |
+|       5 | Riya  |
++---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> delimiter %
+mysql> create procedure p1(in rno1 int)
+    -> begin
+    -> declare rno2 int;
+    -> declare exit_loop boolean;
+    -> declare c1 cursor for select roll_no from o_rollcall where roll_no>rno1;
+    -> declare continue handler for not found set exit_loop=TRUE;
+    -> open c1;
+    -> l1: loop
+    -> fetch c1 into rno2;
+    -> if not exists(select * from n_rollcall where roll_no=rno2) then
+    -> insert into n_rollcall select * from o_rollcall where roll_no=rno2;
+    -> end if;
+    -> if exit_loop then
+    -> close c1;
+    -> leave l1;
+    -> end if;
+    -> end loop l1;
+    -> end;
+    -> %
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call p1(3);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select *from n_rollcall;
++---------+--------+
+| roll_no | name   |
++---------+--------+
+|       6 | Rohan  |
+|       5 | Riya   |
+|       4 | Pramod |
++---------+--------+
+3 rows in set (0.00 sec)
+
+mysql>
